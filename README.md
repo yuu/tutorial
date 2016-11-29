@@ -1,2 +1,2 @@
-# tutorial
+# learn
 learning language programs
