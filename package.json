@@ -1,9 +1,12 @@
 {
-    "name": "hello-world",
+    "name": "hello",
     "version": "0.1.0",
     "main": "main.js",
     "dependencies": {
         "electron": "^1.7.8",
         "electron-packager": "^9.1.0"
+    },
+    "scripts": {
+        "package": "electron-packager ."
     }
 }
