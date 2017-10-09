@@ -1,0 +1,21 @@
+{
+  "name": "electron_react",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "",
+  "main": "src/main.js",
+  "dependencies": {
+    "electron": "^1.7.8",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-redux": "^5.0.6",
+    "react-scripts": "1.0.14",
+    "redux": "^3.7.2"
+  },
+  "scripts": {
+    "start": "node_modules/.bin/electron .",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
