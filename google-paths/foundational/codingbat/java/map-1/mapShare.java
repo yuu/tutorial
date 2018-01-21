@@ -6,5 +6,8 @@ public Map<String, String> mapShare(Map<String, String> map) {
   if (a != null)
     val.replace("b", a);
 
+  if (!val.containsKey("b"))
+    val.put("b", "aaa");
+
   return val;
 }
