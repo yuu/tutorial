@@ -7,7 +7,7 @@ public Map<String, String> mapShare(Map<String, String> map) {
     val.replace("b", a);
 
   if (!val.containsKey("b"))
-    val.put("b", "aaa");
+    val.put("b", a);
 
   return val;
 }
