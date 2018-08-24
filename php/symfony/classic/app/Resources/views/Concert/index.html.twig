@@ -1,0 +1,36 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}公演情報{{ parent() }}{% endblock %}
+
+{% block body %}
+<section id="home" class="head-main-img">
+    <div class="container">
+        <div class="row text-center pad-row">
+            <div class="col-md-10 col-md-offset-1">
+                <h1><span class="back_light">公演情報</span></h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="port-sec">
+    <div class="container">
+        <div class="row pad-row">
+            <div class="col-md-12 col-sm-12">
+                <ul class="portfolio-items col-3">
+                    {% for item in concertList %}
+                        <li class="portfolio-item">
+                        <div class="item-main">
+                        <h5>{{ item.date }}<br />{{ item.place }}</h5>
+                        <ul class="plant">
+                            <li>{{ item.date }} {{ item.time }} 開演</li>
+                            <li>{% if item.available != true %}満席{% else %}予約可能{% endif %}</li>
+                        </ul>
+                </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>    
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}クラシッシンフォニー楽団のページへようこそ！{% endblock %}
+
+{% block body %}
+<section>
+<div class="container">n
+    <h1>クラシッシンフォニー楽団のページへようこそ！</h1>
+    {{ include("Common/information.html.twig") }}
+    <p><a herf="{{ path("app_concert_index") }}">公演情報はこちら</a></p>
+
+    {{ render(controller("AppBundle:Blog:latestList")) }}
+</div>
+</section>
+{% endblock %}

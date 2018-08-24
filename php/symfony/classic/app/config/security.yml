@@ -1,0 +1,41 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User:
+            algorithm: bcrypt
+            cost: 13
+
+    # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    providers:
+        in_memory:
+            memory:
+                users:
+                    admin:
+                        # php -r "echo password_hash('', PASSWORD_BCRYPT, ['cost' => 13]).PHP_EOL;"
+                        password: "$2y$13$kUuQiTDL7mYorlID28B1teoogKloI5p/wBU2EAcIW8R8DXNt9iKUq"
+                        roles: ['ROLE_ADMIN']
+
+    firewalls:
+        admin_secured_area:
+            pattern: ^/admin/
+            http_basic:
+                realm: "Secured Admin Area"
+
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: ~
+            # activate different ways to authenticate
+
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+            #http_basic: ~
+
+            # https://symfony.com/doc/current/security/form_login_setup.html
+            #form_login: ~
+
+    access_control:
+    - { path: ^/admin/, roles: ROLE_ADMIN }
