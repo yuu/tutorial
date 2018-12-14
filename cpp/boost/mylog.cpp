@@ -70,7 +70,10 @@ void init_log_system() {
 
     // ログフォーマットを定義
     {
-        using namespace boost::log::expressions;
+        using boost::log::expressions::format;
+        using boost::log::expressions::format_date_time;
+        using boost::log::expressions::attr;
+        using boost::log::expressions::message;
         using ptime = boost::posix_time::ptime;
         using proc_id = boost::log::attributes::current_process_id;
         using thr_id = boost::log::attributes::current_thread_id;
