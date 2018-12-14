@@ -38,6 +38,12 @@ BOOST_LOG_GLOBAL_LOGGER_INIT(
     {
         // タイムスタンプを設定する
         r.add_attribute("TimeStamp", boost::log::attributes::local_clock());
+        r.add_attribute("ProcessID",
+                        boost::log::attributes::current_process_id());
+        r.add_attribute("Process",
+                        boost::log::attributes::current_process_name());
+        r.add_attribute("ThreadID",
+                        boost::log::attributes::current_thread_id());
     }
 
     return std::move(r);
