@@ -8,6 +8,21 @@
 
 #include <boost/log/utility/setup/common_attributes.hpp>
 
+// boost common
+#include <boost/core/null_deleter.hpp>
+#include <boost/make_shared.hpp>
+
+// backend
+#include <boost/log/sinks/text_ostream_backend.hpp>
+
+// frontend
+#include <boost/log/sinks/sync_frontend.hpp>
+// format
+#include <boost/log/expressions.hpp>
+
+#include <boost/log/attributes/current_process_name.hpp>
+#include <boost/log/support/date_time.hpp>
+
 namespace neosuzu {
 
 BOOST_LOG_GLOBAL_LOGGER_INIT(
@@ -28,6 +43,51 @@ BOOST_LOG_GLOBAL_LOGGER_INIT(
     return std::move(r);
 }
 
+void init_log_system() {
+    // バックエンドを生成
+    using our_backend = boost::log::sinks::text_ostream_backend;
+    auto backend = boost::make_shared<our_backend>();
+    {
+        boost::shared_ptr<std::ostream> stream_out(&std::cout,
+                                                   boost::null_deleter());
+        backend->add_stream(stream_out);
+
+        // ログ書き出し時に自動的にフラッシュを行うように設定する。
+        // バッファリングはされなくなるが、プログラムがクラッシュした場合には安定性が高い
+        backend->auto_flush(true);
+    }
+
+    // フロントエンドを定義
+    auto frontend =
+        boost::make_shared<boost::log::sinks::synchronous_sink<our_backend>>(
+            backend);
+
+    // ログフォーマットを定義
+    frontend->set_formatter(
+        boost::log::expressions::format(
+            "%1%\t%2%\t%3%\t%4%\t[%5%]\t%6%\t%7%\t%8%\t%9%") %
+        boost::log::expressions::format_date_time<boost::posix_time::ptime>(
+            "TimeStamp", "%Y-%m-%d %H:%M:%S") %
+        boost::log::expressions::attr<std::string>("SrcFile") %
+        boost::log::expressions::attr<int>("RecordLine") %
+        boost::log::expressions::attr<std::string>("CurrentFunction") %
+        neosuzu::severity % boost::log::expressions::message %
+        boost::log::expressions::attr<
+            boost::log::attributes::current_process_id::value_type>(
+            "ProcessID") %
+        boost::log::expressions::attr<
+            boost::log::attributes::current_thread_id::value_type>("ThreadID") %
+        boost::log::expressions::attr<
+            boost::log::attributes::current_process_name::value_type>(
+            "Process"));
+
+    // ライブラリ側の定義を使うと以下な感じでも書けるしい。
+    frontend->set_filter(neosuzu::severity >= neosuzu::debug);
+
+    // ライブラリのコアに登録する
+    boost::log::core::get()->add_sink(frontend);
+}
+
 }  // namespace neosuzu
 
 // BOOST_LOG_SEVの戻り値は, basic_record_ostream
@@ -38,7 +98,10 @@ BOOST_LOG_GLOBAL_LOGGER_INIT(
         << boost::log::add_value("CurrentFunction", BOOST_CURRENT_FUNCTION)
 
 int main() {
+    neosuzu::init_log_system();
+
     MY_GLOBAL_LOGGER(neosuzu::info) << "foo";
+    BOOST_LOG_SEV(neosuzu::glob_logger::get(), neosuzu::debug) << "foo";
 
     return 0;
 }
