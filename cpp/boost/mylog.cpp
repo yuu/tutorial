@@ -69,23 +69,21 @@ void init_log_system() {
             backend);
 
     // ログフォーマットを定義
-    frontend->set_formatter(
-        boost::log::expressions::format(
-            "%1%\t%2%\t%3%\t%4%\t[%5%]\t%6%\t%7%\t%8%\t%9%") %
-        boost::log::expressions::format_date_time<boost::posix_time::ptime>(
-            "TimeStamp", "%Y-%m-%d %H:%M:%S") %
-        boost::log::expressions::attr<std::string>("SrcFile") %
-        boost::log::expressions::attr<int>("RecordLine") %
-        boost::log::expressions::attr<std::string>("CurrentFunction") %
-        neosuzu::severity % boost::log::expressions::message %
-        boost::log::expressions::attr<
-            boost::log::attributes::current_process_id::value_type>(
-            "ProcessID") %
-        boost::log::expressions::attr<
-            boost::log::attributes::current_thread_id::value_type>("ThreadID") %
-        boost::log::expressions::attr<
-            boost::log::attributes::current_process_name::value_type>(
-            "Process"));
+    {
+        using namespace boost::log::expressions;
+        using ptime = boost::posix_time::ptime;
+        using proc_id = boost::log::attributes::current_process_id;
+        using thr_id = boost::log::attributes::current_thread_id;
+        using proc_name = boost::log::attributes::current_process_name;
+        frontend->set_formatter(
+            format("%1%\t%2%\t%3%\t%4%\t[%5%]\t%6%\t%7%\t%8%\t%9%") %
+            format_date_time<ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S") %
+            attr<std::string>("SrcFile") % attr<int>("RecordLine") %
+            attr<std::string>("CurrentFunction") % neosuzu::severity % message %
+            attr<proc_id::value_type>("ProcessID") %
+            attr<thr_id::value_type>("ThreadID") %
+            attr<proc_name::value_type>("Process"));
+    }
 
     // ライブラリ側の定義を使うと以下な感じでも書けるしい。
     frontend->set_filter(neosuzu::severity >= neosuzu::debug);
