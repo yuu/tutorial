@@ -97,6 +97,8 @@ void init_log_system() {
         << boost::log::add_value("SrcFile", __FILE__)    \
         << boost::log::add_value("CurrentFunction", BOOST_CURRENT_FUNCTION)
 
+// コード元は、以下。
+// http://d.hatena.ne.jp/yamada28go/20140215/1392470561
 int main() {
     neosuzu::init_log_system();
 
