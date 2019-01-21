@@ -49,6 +49,12 @@ BOOST_LOG_GLOBAL_LOGGER_INIT(
     return std::move(r);
 }
 
+template< typename FunT >
+void set_filter(FunT const& filter, boost::shared_ptr<boost::log::sinks::synchronous_sink<boost::log::sinks::text_ostream_backend>> frontend)
+{
+    frontend->set_filter(filter);
+}
+
 void init_log_system() {
     // バックエンドを生成
     using our_backend = boost::log::sinks::text_ostream_backend;
@@ -89,7 +95,7 @@ void init_log_system() {
     }
 
     // ライブラリ側の定義を使うと以下な感じでも書けるしい。
-    frontend->set_filter(neosuzu::severity >= neosuzu::debug);
+    set_filter(neosuzu::severity >= neosuzu::debug, frontend);
 
     // ライブラリのコアに登録する
     boost::log::core::get()->add_sink(frontend);
@@ -110,7 +116,7 @@ int main() {
     neosuzu::init_log_system();
 
     MY_GLOBAL_LOGGER(neosuzu::info) << "foo";
-    BOOST_LOG_SEV(neosuzu::glob_logger::get(), neosuzu::debug) << "foo";
+    BOOST_LOG_SEV(neosuzu::glob_logger::get(), neosuzu::trace) << "foo";
 
     return 0;
 }
