@@ -1,6 +1,12 @@
 // g++ -o sif sample-ifstm.cpp
-#include <fstream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#include <istream>
 #include <iostream>
+
+#include <ext/stdio_filebuf.h>
 
 /*
  * socat pty,raw,echo=0,link=output pty,raw,echo=0,link=input
@@ -16,8 +22,11 @@
  *  dd cc 80 0 0 80
  */
 int main() {
-    std::ifstream ifs;
-    ifs.open("./output");
+    constexpr auto path = "./output";
+    const auto fd = ::open(path, O_RDWR | O_APPEND);
+
+    __gnu_cxx::stdio_filebuf<char> fd_file_buf(fd, std::ios_base::in | std::ios_base::binary);
+    std::istream ifs(&fd_file_buf);
     for (;;) {
         uint8_t x = 0;
         ifs >> x;
