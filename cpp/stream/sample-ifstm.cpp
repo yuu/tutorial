@@ -8,6 +8,19 @@
 
 #include <ext/stdio_filebuf.h>
 
+void standard_filebuf() {
+    constexpr auto path = "./output";
+    std::filebuf fb;
+    fb.open(path, std::ios_base::in | std::ios_base::out | std::ios_base::binary);
+    std::iostream ifs(&fb);
+    ifs << "0xdd";
+    for (;;) {
+        uint8_t x = 0;
+        ifs >> x;
+        std::cout << std::hex << static_cast<uint32_t>(x) << std::endl;
+    }
+}
+
 /*
  * socat pty,raw,echo=0,link=output pty,raw,echo=0,link=input
  * echo 1 > input
