@@ -8,6 +8,12 @@
  *
  * result:
  *  a
+ *
+ *
+ * echo -en '\xDD\xCC\x80\x00\x00\x80' > input
+ *
+ * result:
+ *  dd cc 80 0 0 80
  */
 int main() {
     std::ifstream ifs;
@@ -15,7 +21,7 @@ int main() {
     for (;;) {
         uint8_t x = 0;
         ifs >> x;
-        std::cout << x << std::endl;
+        std::cout << std::hex << static_cast<uint32_t>(x) << std::endl;
     }
 
     return 0;
